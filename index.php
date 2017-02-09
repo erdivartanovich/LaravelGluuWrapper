@@ -2,7 +2,7 @@
 
 require "./vendor/autoload.php";
 
-use Refactory\GluuWrapper\JWTBuilder;
+use Refactory\LaravelGluuWrapper\JWTBuilder;
 
 $secret = "TEST";
 
