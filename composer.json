@@ -1,0 +1,19 @@
+{
+    "name": "hystolytc/gluu-wrapper",
+    "description": "A wrapper for Gluu",
+    "type": "library",
+    "authors": [
+        {
+            "name": "hystolytc",
+            "email": "melife4@gmail.com"
+        }
+    ],
+    "require": {
+        "lcobucci/jwt": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Refactory\\GluuWrapper\\": "src/"
+        }
+    }
+}
