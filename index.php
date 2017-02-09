@@ -2,22 +2,11 @@
 
 require "./vendor/autoload.php";
 
-use Refactory\LaravelGluuWrapper\JWTBuilder;
+$params = explode('/', $_SERVER['REQUEST_URI']);
+$params = explode('?', array_pop($params))[0];
 
-$secret = "TEST";
-
-$builder = new JWTBuilder('HS256');
-$builder->setSecret($secret);
-
-$builder->addClaims([
-  "response_type" => "code",
-  "client_id" => "@!8EF4.0267.10A3.7789!0001!58DE.5ADC!0008!FCFC.B130",
-  "client_secret" => "hanyacerita",
-  "redirect_uri" => "https://crm.kw.com/auth/callback",
-  "scope" => "openid",
-  "claims" => []
-]);
-
-$token = $builder->generate();
-
-var_dump($token->verify($builder->getSigner(), $secret));
+if ($params == 'callback') {
+  require './get_token.php';
+} else {
+  require './login.php';
+}

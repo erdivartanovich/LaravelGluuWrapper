@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "lcobucci/jwt": "^3.3"
+        "lcobucci/jwt": "^3.3",
+        "guzzlehttp/guzzle": "~6.0"
     },
     "prefer-stable": true,    
     "minimum-stability": "dev",    
