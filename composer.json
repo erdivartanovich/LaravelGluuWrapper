@@ -1,6 +1,6 @@
 {
-    "name": "hystolytc/gluu-wrapper",
-    "description": "A wrapper for Gluu",
+    "name": "refactory-id/laravel-gluu-wrapper",
+    "description": "A laravel wrapper for Gluu",
     "type": "library",
     "authors": [
         {
@@ -9,11 +9,13 @@
         }
     ],
     "require": {
-        "lcobucci/jwt": "^3.2"
+        "lcobucci/jwt": "^3.3"
     },
+    "prefer-stable": true,    
+    "minimum-stability": "dev",    
     "autoload": {
         "psr-4": {
-            "Refactory\\GluuWrapper\\": "src/"
+            "Refactory\\LaravelGluuWrapper\\": "src/"
         }
     }
 }
