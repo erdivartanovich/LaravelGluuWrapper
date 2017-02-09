@@ -1,6 +1,6 @@
 <?php
 
-namespace Refactory\GluuWrapper;
+namespace Refactory\LaravelGluuWrapper;
 
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
