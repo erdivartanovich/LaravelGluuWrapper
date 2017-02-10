@@ -72,6 +72,7 @@ class TokenRequester
 
         //decode json result, and get the content
         $result = json_decode($res->getBody()->getContents(), true);
+        $now = Carbon::now()->format('Y-m-d H:i:s');
         $expiration = Carbon::now()->addSeconds($result['expires_in'])->format('Y-m-d H:i:s');
 
         if (isset($result['access_token']) && config('gluu-wrapper.autosave')) {
@@ -80,6 +81,8 @@ class TokenRequester
                     'access_token' => $result['access_token'],
                     'expiry_in' => $expiration,
                     'refresh_token' => $result['refresh_token'],
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ]
             );
         }
