@@ -15,8 +15,8 @@ class CreateAccessTokenTable extends Migration
         Schema::create('access_tokens', function (Blueprint $table) {
             $table->increments('id');
             $table->string('access_token');
+            $table->timestamp('expiry_in');
             $table->string('refresh_token');
-            $table->string('expiry_in');
             $table->timestamps();
         });
     }
