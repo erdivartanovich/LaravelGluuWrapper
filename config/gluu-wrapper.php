@@ -2,11 +2,11 @@
 
 return [
     'algorithm' => 'HS256',
-    'authorization_endpoint' => 'https://dev.idp.kw.com/oxauth/seam/resource/restv1/oxauth/authorize',
-    'token_endpoint' => 'https://dev.idp.kw.com/oxauth/seam/resource/restv1/oxauth/token',
+    'authorization_endpoint' => 'https://example.com/authorize',
+    'token_endpoint' => 'https://example.com/token',
 
-    'client_id' => '@!8EF4.0267.10A3.7789!0001!58DE.5ADC!0008!FCFC.B130',
-    'client_secret' => 'hanyacerita',
+    'client_id' => 'fake-client-id',
+    'client_secret' => 'fake-client-secret',
     
     'redirect_uri' => 'http://localhost:8000/callback',
 

@@ -13,13 +13,10 @@
         "guzzlehttp/guzzle": "~6.0"
     },
     "autoload": {
-        "classmap": [
-            "database"
-        ],
         "psr-4": {
             "Refactory\\LaravelGluuWrapper\\": "src/"
         }
     },
-    "prefer-stable": true,    
+    "prefer-stable": true,
     "minimum-stability": "dev"
 }
