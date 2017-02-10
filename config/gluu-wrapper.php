@@ -15,4 +15,9 @@ return [
 
     'grant_type' => 'authorization_code',
     'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+
+    // Set this value to true to automatically store your token
+    // Make sure you have 
+    'autosave' => false,
+    'table_name' => 'access_tokens'
 ];

@@ -69,6 +69,11 @@ class TokenRequester
         ]);
 
         //decode json result, and get the content
-        return json_decode($res->getBody()->getContents());
+        $result = json_decode($res->getBody()->getContents(), true);
+
+        if (isset($result['access_token']) && config('gluu-wrapper.autosave')) {
+        }
+
+        return $result;
     }
 }

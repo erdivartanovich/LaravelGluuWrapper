@@ -16,6 +16,11 @@ class ServiceProvider extends BaseProvider
         $this->publishes([
             __DIR__.'/../config/gluu-wrapper.php' => config_path('gluu-wrapper.php'),
         ], 'config');
+
+
+        $this->publishes([
+            __DIR__.'/../database/migrations/' => database_path('migrations')
+        ], 'migrations');
     }
 
     /**
