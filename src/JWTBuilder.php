@@ -5,7 +5,8 @@ namespace Refactory\LaravelGluuWrapper;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 
-class JWTBuilder {
+class JWTBuilder
+{
 
   protected $builder;
   protected $algo;
