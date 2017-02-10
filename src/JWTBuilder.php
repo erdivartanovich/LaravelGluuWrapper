@@ -19,32 +19,25 @@ class JWTBuilder
       $this->setAlgorithm($algo);
   }
 
-  public function generate()
-  {
-    foreach ($this->payloads as $key => $val) {
-      $this->builder->with($key, $val);
-    }
-
-    $this->sign();
-
-    return $this->builder->getToken();
-  }
-
+  // client_secret setter
   public function setSecret($secret)
   {
     $this->secret = $secret;
   }
 
+  //algorithm setter
   public function setAlgorithm($algo)
   {
     $this->algo = $algo;
   }
 
+  //checker for client secret is empty or not
   public function hasSecret()
   {
     return $this->secret != null && $this->secret != '';
   }
 
+  //function for sign 
   protected function sign()
   {
     if ($this->algo != 'none') {
@@ -55,6 +48,7 @@ class JWTBuilder
     }
   }
 
+  //Signer method getter e.g algo "HS256" will return "Sha256"
   public function getSigner()
   {
     $signer = null;
@@ -64,17 +58,30 @@ class JWTBuilder
         $signer = new Sha256();
         break;
     }
-
     return $signer;
   }
 
-  public function addClaim($key, $value)
+  //add payload item by key and value pair
+  public function addPayload($key, $value)
   {
       $this->payloads[$key] = $value;
   }
 
-  public function addClaims($values)
+  //add payload items from array
+  public function addPayloads($values)
   {
       $this->payloads = array_merge($this->payloads, $values);
+  }
+
+  //go generate JWT !
+  public function generate()
+  {
+    foreach ($this->payloads as $key => $val) {
+      $this->builder->with($key, $val);
+    }
+
+    $this->sign();
+
+    return $this->builder->getToken();
   }
 }

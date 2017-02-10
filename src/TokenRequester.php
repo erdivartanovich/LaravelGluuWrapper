@@ -4,23 +4,21 @@ namespace Refactory\LaravelGluuWrapper;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-
 class TokenRequester
 {
-    public function generateUrl()
+    public function generateURI()
     {
         $builder = new JWTBuilder(config('gluu-wrapper.algorithm'));
 
         $claims = [
             "response_type" => config('gluu-wrapper.response_type'),
             "client_id" => config('gluu-wrapper.client_id'),
-            "client_secret" => config('gluu-wrapper.client_secret'),
             "redirect_uri" => config('gluu-wrapper.redirect_uri'),
             "scope" => config('gluu-wrapper.scope'),
         ];
 
         $builder->setSecret(config('gluu-wrapper.client_secret'));
-        $builder->addClaims($claims);
+        $builder->addPayloads($claims);
 
         $token = $builder->generate();
 
@@ -39,17 +37,17 @@ class TokenRequester
         $client = new Client();
         $builder = new JWTBuilder(config('gluu-wrapper.algorithm'));
         $exp = 86400;
-
         $endpoint = config('gluu-wrapper.token_endpoint');
 
-        //prepare openID claims
-        $builder->addClaims([
+        //prepare openID payload
+        $builder->addPayloads([
             "iss" => config('gluu-wrapper.client_id'),
             "sub" => config('gluu-wrapper.client_id'),
             "aud" => $endpoint,
             "jti" => md5(time()),
             "exp" => time() + $exp,
             "iat" => time()
+            // claims => {} cannot use empty claims, if empty don't include it! 
         ]);
 
         //set client secret
