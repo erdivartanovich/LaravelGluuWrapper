@@ -75,7 +75,7 @@ class TokenRequester
         $expiration = Carbon::now()->addSeconds($result['expires_in'])->format('Y-m-d H:i:s');
 
         if (isset($result['access_token']) && config('gluu-wrapper.autosave')) {
-            DB::table('users')->insert(
+            \DB::table(config('gluu-wrapper.table_name'))->insert(
                 [
                     'access_token' => $result['access_token'],
                     'expiry_in' => $expiration,
