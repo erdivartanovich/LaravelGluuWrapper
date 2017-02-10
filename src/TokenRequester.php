@@ -4,6 +4,8 @@ namespace Refactory\LaravelGluuWrapper;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+
 class TokenRequester
 {
     public function generateURI()
@@ -69,6 +71,22 @@ class TokenRequester
         ]);
 
         //decode json result, and get the content
-        return json_decode($res->getBody()->getContents());
+        $result = json_decode($res->getBody()->getContents(), true);
+        $now = Carbon::now()->format('Y-m-d H:i:s');
+        $expiration = Carbon::now()->addSeconds($result['expires_in'])->format('Y-m-d H:i:s');
+
+        if (isset($result['access_token']) && config('gluu-wrapper.autosave')) {
+            \DB::table(config('gluu-wrapper.table_name'))->insert(
+                [
+                    'access_token' => $result['access_token'],
+                    'expiry_in' => $expiration,
+                    'refresh_token' => $result['refresh_token'],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+        }
+
+        return $result;
     }
 }
