@@ -14,14 +14,17 @@ class TokenRequester implements Contract
     {
         $builder = new JWTBuilder(config('gluu-wrapper.algorithm'));
 
+        $client_id = config('gluu-wrapper.client_id');        
+        $client_secret = config('gluu-wrapper.client_secret');
+
         $claims = [
             "response_type" => config('gluu-wrapper.response_type'),
-            "client_id" => config('gluu-wrapper.client_id'),
+            "client_id" => $client_id,
             "redirect_uri" => url(config('gluu-wrapper.route_access_token_granted')),
             "scope" => config('gluu-wrapper.scope'),
         ];
 
-        $builder->setSecret(config('gluu-wrapper.client_secret'));
+        $builder->setSecret($client_secret);
         $builder->addPayloads($claims);
 
         $token = $builder->generate();
@@ -38,6 +41,9 @@ class TokenRequester implements Contract
 
     public function getAccessToken($code)
     {
+        $client_id = config('gluu-wrapper.client_id');
+        $client_secret = config('gluu-wrapper.client_secret');
+        
         $client = new Client();
         $builder = new JWTBuilder(config('gluu-wrapper.algorithm'));
         $exp = 86400;
@@ -45,8 +51,8 @@ class TokenRequester implements Contract
 
         //prepare openID payload
         $builder->addPayloads([
-            "iss" => config('gluu-wrapper.client_id'),
-            "sub" => config('gluu-wrapper.client_id'),
+            "iss" => $client_id,
+            "sub" => $client_id,
             "aud" => $endpoint,
             "jti" => md5(time()),
             "exp" => time() + $exp,
@@ -55,7 +61,7 @@ class TokenRequester implements Contract
         ]);
 
         //set client secret
-        $builder->setSecret(config('gluu-wrapper.client_secret'));
+        $builder->setSecret($client_secret);
 
         //generate JWT
         $token = $builder->generate();
@@ -82,6 +88,7 @@ class TokenRequester implements Contract
                 [
                     'access_token' => $result['access_token'],
                     'expiry_in' => $expiration,
+                    'client_id' => $client_id,
                     'refresh_token' => $result['refresh_token'],
                     'created_at' => $now,
                     'updated_at' => $now,

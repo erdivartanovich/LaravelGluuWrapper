@@ -20,7 +20,9 @@ return [
     'autosave' => false,
     'table_name' => 'access_tokens',
 
-    // Routes
+    // Endpoint for user to access
     'route_endpoint' => '/login',
+
+    // Callback routes
     'route_access_token_granted' => '/access_granted'
 ];
