@@ -36,7 +36,7 @@ class TokenRequester implements Contract
 
         return $uri;
     }
-    
+
     public function getRequest(Request $request)
     {
         return $request->all();
@@ -45,10 +45,10 @@ class TokenRequester implements Contract
     public function getAccessToken($code, $clientData)
     {
         $data = $this->decryptClientData($clientData);
-        
+
         $client_id = $data['client_id'];
         $client_secret = $data['client_secret'];
-        
+
         $client = new Client();
         $builder = new JWTBuilder(config('gluu-wrapper.algorithm'));
         $exp = 86400;
@@ -62,7 +62,7 @@ class TokenRequester implements Contract
             "jti" => md5(time()),
             "exp" => time() + $exp,
             "iat" => time()
-            // claims => {} cannot use empty claims, if empty don't include it! 
+            // claims => {} cannot use empty claims, if empty don't include it!
         ]);
 
         //set client secret
@@ -109,12 +109,12 @@ class TokenRequester implements Contract
         $data = $client_id . '~|~' . $client_secret;
         $data = Crypt::encrypt($data);
 
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '='); 
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
     public function decryptClientData($data)
     {
-        $data = base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
+        $data = base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
         $data = explode('~|~', Crypt::decrypt($data));
 
         return [

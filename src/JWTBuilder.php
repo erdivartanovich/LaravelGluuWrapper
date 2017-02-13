@@ -3,7 +3,8 @@
 namespace Refactory\LaravelGluuWrapper;
 
 use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Hmac\Sha256 as HS256;
+use Lcobucci\JWT\Signer\Rsa\Sha256 as RS256;
 
 class JWTBuilder
 {
@@ -37,7 +38,7 @@ class JWTBuilder
     return $this->secret != null && $this->secret != '';
   }
 
-  //function for sign 
+  //function for sign
   protected function sign()
   {
     if ($this->algo != 'none') {
@@ -48,15 +49,14 @@ class JWTBuilder
     }
   }
 
-  //Signer method getter e.g algo "HS256" will return "Sha256"
   public function getSigner()
   {
     $signer = null;
 
     switch (strtoupper($this->algo)) {
-      case "HS256":
-        $signer = new Sha256();
-        break;
+        case "HS256":
+          $signer = new HS256();
+          break;
     }
     return $signer;
   }
