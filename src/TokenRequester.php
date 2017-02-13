@@ -2,11 +2,12 @@
 
 namespace Refactory\LaravelGluuWrapper;
 
+use Refactory\LaravelGluuWrapper\Contracts\TokenRequester as Contract;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-class TokenRequester
+class TokenRequester implements Contract
 {
     public function generateURI()
     {
@@ -88,5 +89,10 @@ class TokenRequester
         }
 
         return $result;
+    }
+
+    public function routes()
+    {
+        dd("HELLO, MOTO");
     }
 }
