@@ -6,6 +6,7 @@ use Refactory\LaravelGluuWrapper\Contracts\TokenRequester as Contract;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Route;
 
 class TokenRequester implements Contract
 {
@@ -16,7 +17,7 @@ class TokenRequester implements Contract
         $claims = [
             "response_type" => config('gluu-wrapper.response_type'),
             "client_id" => config('gluu-wrapper.client_id'),
-            "redirect_uri" => config('gluu-wrapper.redirect_uri'),
+            "redirect_uri" => url(config('gluu-wrapper.route_access_token_granted')),
             "scope" => config('gluu-wrapper.scope'),
         ];
 
@@ -65,7 +66,7 @@ class TokenRequester implements Contract
             'form_params' => [
                 "grant_type" => config('gluu-wrapper.grant_type'),
                 "code" => $code,
-                "redirect_uri" => config('gluu-wrapper.redirect_uri'),
+                "redirect_uri" => url(config('gluu-wrapper.route_access_token_granted')),
                 'client_assertion_type' => config('gluu-wrapper.client_assertion_type'),
                 "client_assertion" => $token . ''
             ]
@@ -93,6 +94,15 @@ class TokenRequester implements Contract
 
     public function routes()
     {
-        dd("HELLO, MOTO");
+        Route::get(config('gluu-wrapper.route_endpoint'), function () {
+            return redirect($this->generateURI());
+        });
+
+        Route::get(config('gluu-wrapper.route_access_token_granted'), function () {
+            $code = $this->getCode(request());
+            $accessToken = $this->getAccessToken($code);
+
+            return response()->json($accessToken);
+        });
     }
 }
