@@ -6,22 +6,25 @@ use Refactory\LaravelGluuWrapper\Contracts\TokenRequester as Contract;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Route;
+use Crypt;
 
 class TokenRequester implements Contract
 {
-    public function generateURI()
+    public function generateURI($selfConsuming = false)
     {
         $builder = new JWTBuilder(config('gluu-wrapper.algorithm'));
 
-        $client_id = config('gluu-wrapper.client_id');        
-        $client_secret = config('gluu-wrapper.client_secret');
+        $client_id = request()->get('client_id') ?: config('gluu-wrapper.client_id');
+        $client_secret = request()->get('client_secret') ?: config('gluu-wrapper.client_secret');
+
+        $clientData = $this->encryptClientData($client_id, $client_secret);
 
         $claims = [
             "response_type" => config('gluu-wrapper.response_type'),
-            "client_id" => $client_id,
             "redirect_uri" => url(config('gluu-wrapper.route_access_token_granted')),
+            'client_id' => $client_id,
             "scope" => config('gluu-wrapper.scope'),
+            "state" => $clientData,
         ];
 
         $builder->setSecret($client_secret);
@@ -34,15 +37,17 @@ class TokenRequester implements Contract
         return $uri;
     }
     
-    public function getCode(Request $request)
+    public function getRequest(Request $request)
     {
-        return $request->get('code');
+        return $request->all();
     }
 
-    public function getAccessToken($code)
+    public function getAccessToken($code, $clientData)
     {
-        $client_id = config('gluu-wrapper.client_id');
-        $client_secret = config('gluu-wrapper.client_secret');
+        $data = $this->decryptClientData($clientData);
+        
+        $client_id = $data['client_id'];
+        $client_secret = $data['client_secret'];
         
         $client = new Client();
         $builder = new JWTBuilder(config('gluu-wrapper.algorithm'));
@@ -99,17 +104,22 @@ class TokenRequester implements Contract
         return $result;
     }
 
-    public function routes()
+    public function encryptClientData($client_id, $client_secret)
     {
-        Route::get(config('gluu-wrapper.route_endpoint'), function () {
-            return redirect($this->generateURI());
-        });
+        $data = $client_id . '~|~' . $client_secret;
+        $data = Crypt::encrypt($data);
 
-        Route::get(config('gluu-wrapper.route_access_token_granted'), function () {
-            $code = $this->getCode(request());
-            $accessToken = $this->getAccessToken($code);
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '='); 
+    }
 
-            return response()->json($accessToken);
-        });
+    public function decryptClientData($data)
+    {
+        $data = base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
+        $data = explode('~|~', Crypt::decrypt($data));
+
+        return [
+            'client_id' => $data[0],
+            'client_secret' => $data[1],
+        ];
     }
 }

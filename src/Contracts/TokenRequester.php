@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 interface TokenRequester
 {
-    public function generateURI();
-    public function getCode(Request $request);
-    public function getAccessToken($code);
+    public function generateURI($selfConsuming = false);
+    public function getRequest(Request $request);
+    public function getAccessToken($code, $clientData);
 }
