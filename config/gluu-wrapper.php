@@ -5,11 +5,10 @@ return [
     'authorization_endpoint' => 'https://example.com/authorize',
     'token_endpoint' => 'https://example.com/token',
 
+    // This client_id and client_secret is used as self-consumed keys.
     'client_id' => 'fake-client-id',
     'client_secret' => 'fake-client-secret',
     
-    'redirect_uri' => 'http://localhost:8000/callback',
-
     'response_type' => 'code',
     'scope' => 'openid',
 
@@ -19,5 +18,9 @@ return [
     // Set this value to true to automatically store your token.
     // Make sure that you have migrate the table.
     'autosave' => false,
-    'table_name' => 'access_tokens'
+    'table_name' => 'access_tokens',
+
+    // Routes
+    'route_endpoint' => '/login',
+    'route_access_token_granted' => '/access_granted'
 ];
