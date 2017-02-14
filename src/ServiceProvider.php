@@ -3,7 +3,7 @@
 namespace Refactory\LaravelGluuWrapper;
 
 use Illuminate\Support\ServiceProvider as BaseProvider;
-use Refactory\LaravelGluuWrapper\Contracts\TokenRequester as Contract;
+use Refactory\LaravelGluuWrapper\Contracts\Manager as Contract;
 
 class ServiceProvider extends BaseProvider
 {
@@ -24,20 +24,20 @@ class ServiceProvider extends BaseProvider
 
         if ( ! $this->app->routesAreCached()) {
             $this->app['router']->get(config('gluu-wrapper.route_endpoint'), function () {
-                return redirect($this->app['gluu-wrapper']->generateURI());
+                return redirect($this->app['gluu-wrapper']->getTokenRequester()->generateURI());
             });
 
             $this->app['router']->get(config('gluu-wrapper.route_get_user_info'), function ($access_token) {
-                $userInfoJWE = $this->app['gluu-wrapper.user-info']->getUserInfo($access_token);
+                $userInfoJWE = $this->app['gluu-wrapper']->getUserRequester()->getUserInfo($access_token);
 
                 return response()->json($userInfoJWE);
             });
 
             $this->app['router']->get(config('gluu-wrapper.route_access_token_granted'), function () {
-                $request = $this->app['gluu-wrapper']->getRequest($this->app['request']);
+                $request = $this->app['gluu-wrapper']->getTokenRequester()->getRequest($this->app['request']);
 
                 if (isset($request['code'])) {
-                    $accessToken = $this->app['gluu-wrapper']->getAccessToken($request['code'], $request['state']);
+                    $accessToken = $this->app['gluu-wrapper']->getTokenRequester()->getAccessToken($request['code'], $request['state']);
 
                     return response()->json($accessToken);
                 }
@@ -58,11 +58,7 @@ class ServiceProvider extends BaseProvider
             __DIR__.'/../config/gluu-wrapper.php', 'gluu-wrapper'
         );
 
-        $this->app->singleton(Contract::class, TokenRequester::class);
-
-        $this->app->singleton('gluu-wrapper.user-info', function($app) {
-            return new UserInfoRequester;
-        });
+        $this->app->singleton(Contract::class, Manager::class);
 
         $this->app->singleton('gluu-wrapper', function($app) {
             return $app->make(Contract::class);

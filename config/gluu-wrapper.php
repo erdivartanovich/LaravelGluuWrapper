@@ -5,6 +5,7 @@ return [
     'authorization_endpoint' => 'https://example.com/authorize',
     'token_endpoint' => 'https://example.com/token',
     'userinfo_endpoint' => 'https://example.com/userinfo',
+    'clientinfo_endpoint' => 'https://example.com/clientinfo',
 
     // This client_id and client_secret is used as self-consumed keys.
     'client_id' => 'fake-client-id',

@@ -2,7 +2,7 @@
 
 namespace Refactory\LaravelGluuWrapper\Facades;
 
-use Refactory\LaravelGluuWrapper\Contracts\TokenRequester;
+use Refactory\LaravelGluuWrapper\Contracts\Manager;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -17,6 +17,6 @@ class GluuWrapper extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return TokenRequester::class;
+        return Manager::class;
     }
 }

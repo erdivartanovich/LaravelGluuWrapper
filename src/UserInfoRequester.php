@@ -8,12 +8,12 @@ use GuzzleHttp\Client;
 
 class UserInfoRequester implements Contract
 {
-    public function getUserInfo($access_token)
+    public function getUserInfo($access_token, $type = 'userinfo')
     {
         $parser = new Parser();
 
         $client = new Client();
-        $res = $client->request('GET', config('gluu-wrapper.userinfo_endpoint'), [
+        $res = $client->request('GET', config("gluu-wrapper.{$type}_endpoint"), [
             'verify' => false,
             'headers' => [
                 'Authorization' => "Bearer {$access_token}"
@@ -24,6 +24,13 @@ class UserInfoRequester implements Contract
 
         $token = $parser->parse($result);
 
-        return $token->getClaims();
+        $claims = $token->getClaims();
+
+        return empty($claims) ? null : $claims;
+    }
+
+    public function getClientInfo($access_token)
+    {
+        return $this->getUserInfo($access_token, 'clientinfo');
     }
 }
